@@ -24,6 +24,8 @@ pub struct GraphEditorState<NodeData, DataType, ValueType, NodeTemplate, UserSta
     /// The currently selected node. Some interface actions depend on the
     /// currently selected node.
     pub selected_nodes: Vec<NodeId>,
+    /// The currently active node.
+    pub active_node: Option<NodeId>,
     /// The mouse drag start position for an ongoing box selection.
     pub ongoing_box_selection: Option<egui::Pos2>,
     /// The position of each node.
@@ -57,6 +59,7 @@ impl<NodeData, DataType, ValueType, NodeKind, UserState> Default
             node_order: Default::default(),
             connection_in_progress: Default::default(),
             selected_nodes: Default::default(),
+            active_node: Default::default(),
             ongoing_box_selection: Default::default(),
             node_positions: Default::default(),
             node_finder: Default::default(),

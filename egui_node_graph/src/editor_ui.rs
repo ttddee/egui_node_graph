@@ -24,6 +24,7 @@ pub enum NodeResponse<UserResponse: UserResponseTrait, NodeData: NodeDataTrait> 
     },
     CreatedNode(NodeId),
     SelectNode(NodeId),
+    ActivateNode(NodeId),
     /// As a user of this library, prefer listening for `DeleteNodeFull` which
     /// will also contain the user data for the deleted node.
     DeleteNodeUi(NodeId),
@@ -314,6 +315,9 @@ where
                 }
                 NodeResponse::SelectNode(node_id) => {
                     self.selected_nodes = Vec::from([*node_id]);
+                }
+                NodeResponse::ActivateNode(node_id) => {
+                    self.active_node = Some(*node_id);
                 }
                 NodeResponse::DeleteNodeUi(node_id) => {
                     let (node, disc_events) = self.graph.remove_node(*node_id);
@@ -892,6 +896,12 @@ where
         // This prevents some issues.
         if responses.is_empty() && window_response.clicked_by(PointerButton::Primary) {
             responses.push(NodeResponse::SelectNode(self.node_id));
+            responses.push(NodeResponse::RaiseNode(self.node_id));
+        }
+
+        // Node activation
+        if window_response.double_clicked_by(PointerButton::Primary) {
+            responses.push(NodeResponse::ActivateNode(self.node_id));
             responses.push(NodeResponse::RaiseNode(self.node_id));
         }
 

@@ -9,7 +9,6 @@ rust-version = "1.56"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-ecolor = "*"
 eframe = "0.23.0"
 egui_node_graph = { path = "../egui_node_graph" }
 anyhow = "1.0"
