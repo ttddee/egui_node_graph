@@ -158,7 +158,7 @@ impl NodeTemplateTrait for MyNodeTemplate {
         self.node_finder_label(user_state).into()
     }
 
-    fn user_data(&self, _user_state: &mut Self::UserState) -> Self::NodeData {
+    fn node_data(&self, _user_state: &mut Self::UserState) -> Self::NodeData {
         MyNodeData { template: *self }
     }
 

@@ -191,7 +191,7 @@ where
                 if let Some(node_kind) = node_finder.show(ui, all_kinds, user_state) {
                     let new_node = self.graph.add_node(
                         node_kind.node_graph_label(user_state),
-                        node_kind.user_data(user_state),
+                        node_kind.node_data(user_state),
                         |graph, node_id| node_kind.build_node(graph, user_state, node_id),
                     );
                     self.node_positions.insert(
