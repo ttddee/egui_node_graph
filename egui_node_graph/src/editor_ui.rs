@@ -567,7 +567,7 @@ where
     DataType: DataTypeTrait<UserState>,
 {
     pub const MIN_NODE_SIZE: [f32; 2] = [120.0, 80.0];
-    pub const MAX_NODE_SIZE: [f32; 2] = [200.0, 200.0];
+    pub const MAX_NODE_SIZE: [f32; 2] = [120.0, 200.0];
 
     pub fn show(
         self,
@@ -661,7 +661,7 @@ where
                     self.graph,
                     user_state,
                 ));
-                ui.add_space(8.0 * pan_zoom.zoom); // The size of the little cross icon
+                ui.add_space(6.0 * pan_zoom.zoom); // The size of the little cross icon
             });
             ui.add_space(margin.y);
             title_height = ui.min_size().y;
@@ -753,11 +753,13 @@ where
         let mut outer_rect = child_ui.min_rect().expand2(margin);
 
         // Check for minimum size.
-        if outer_rect.width() < Self::MIN_NODE_SIZE[0] {
-            outer_rect.set_width(Self::MIN_NODE_SIZE[0])
+        let min_width = Self::MIN_NODE_SIZE[0] * pan_zoom.zoom;
+        if outer_rect.width() < min_width {
+            outer_rect.set_width(min_width)
         }
-        if outer_rect.height() < Self::MIN_NODE_SIZE[1] {
-            outer_rect.set_height(Self::MIN_NODE_SIZE[1])
+        let min_height = Self::MIN_NODE_SIZE[1] * pan_zoom.zoom;
+        if outer_rect.height() < min_height {
+            outer_rect.set_height(min_height)
         }
 
         let port_left = outer_rect.left();
