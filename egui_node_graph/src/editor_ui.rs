@@ -566,6 +566,7 @@ where
         WidgetValueTrait<Response = UserResponse, UserState = UserState, NodeData = NodeData>,
     DataType: DataTypeTrait<UserState>,
 {
+    pub const MIN_NODE_SIZE: [f32; 2] = [120.0, 80.0];
     pub const MAX_NODE_SIZE: [f32; 2] = [200.0, 200.0];
 
     pub fn show(
@@ -612,6 +613,7 @@ where
         let background_shape = ui.painter().add(Shape::Noop);
 
         let mut outer_rect_bounds = ui.available_rect_before_wrap();
+
         // Scale hack, otherwise some (larger) rects expand too much when zoomed out
         outer_rect_bounds.max.x =
             outer_rect_bounds.min.x + outer_rect_bounds.width() * pan_zoom.zoom;
@@ -748,7 +750,16 @@ where
         // Second pass, iterate again to draw the ports. This happens outside
         // the child_ui because we want ports to overflow the node background.
 
-        let outer_rect = child_ui.min_rect().expand2(margin);
+        let mut outer_rect = child_ui.min_rect().expand2(margin);
+
+        // Check for minimum size.
+        if outer_rect.width() < Self::MIN_NODE_SIZE[0] {
+            outer_rect.set_width(Self::MIN_NODE_SIZE[0])
+        }
+        if outer_rect.height() < Self::MIN_NODE_SIZE[1] {
+            outer_rect.set_height(Self::MIN_NODE_SIZE[1])
+        }
+
         let port_left = outer_rect.left();
         let port_right = outer_rect.right();
 
