@@ -738,13 +738,6 @@ where
                 let height_after = ui.min_rect().bottom();
                 output_port_heights.push((height_before + height_after) / 2.0);
             }
-
-            responses.extend(self.graph[self.node_id].user_data.bottom_ui(
-                ui,
-                self.node_id,
-                self.graph,
-                user_state,
-            ));
         });
 
         // Second pass, iterate again to draw the ports. This happens outside

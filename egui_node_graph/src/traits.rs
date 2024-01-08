@@ -103,15 +103,15 @@ where
     type ValueType;
 
     /// Additional UI elements to draw in the nodes, after the parameters.
-    fn bottom_ui(
-        &self,
-        ui: &mut egui::Ui,
-        node_id: NodeId,
-        graph: &Graph<Self, Self::DataType, Self::ValueType>,
-        user_state: &mut Self::UserState,
-    ) -> Vec<NodeResponse<Self::Response, Self>>
-    where
-        Self::Response: UserResponseTrait;
+    // fn bottom_ui(
+    //     &self,
+    //     ui: &mut egui::Ui,
+    //     node_id: NodeId,
+    //     graph: &Graph<Self, Self::DataType, Self::ValueType>,
+    //     user_state: &mut Self::UserState,
+    // ) -> Vec<NodeResponse<Self::Response, Self>>
+    // where
+    //     Self::Response: UserResponseTrait;
 
     /// UI to draw on the top bar of the node.
     fn top_bar_ui(
