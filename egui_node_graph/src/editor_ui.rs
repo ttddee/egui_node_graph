@@ -124,7 +124,7 @@ where
 
         // Zoom only within area where graph is shown
         if ui.rect_contains_pointer(clip_rect) {
-            let scroll_delta = ui.input(|i| i.scroll_delta.y);
+            let scroll_delta = ui.input(|i| i.smooth_scroll_delta.y);
             if scroll_delta != 0.0 {
                 let zoom_delta = (scroll_delta * 0.002).exp();
                 self.zoom(ui, zoom_delta);
@@ -204,7 +204,7 @@ where
 
         // Used to detect drag events in the background
         let mut drag_started_on_background = false;
-        let mut drag_released_on_background = false;
+        let mut drag_stopped_on_background = false;
 
         debug_assert_eq!(
             self.node_order.iter().copied().collect::<HashSet<_>>(),
@@ -220,8 +220,8 @@ where
             click_on_background = true;
         } else if r.drag_started() {
             drag_started_on_background = true;
-        } else if r.drag_released() {
-            drag_released_on_background = true;
+        } else if r.drag_stopped() {
+            drag_stopped_on_background = true;
         }
 
         /* Draw nodes */
@@ -248,7 +248,7 @@ where
         /* Draw the node finder, if open */
         let mut should_close_node_finder = false;
         if let Some(ref mut node_finder) = self.node_finder {
-            let mut node_finder_area = Area::new("node_finder").order(Order::Foreground);
+            let mut node_finder_area = Area::new(Id::new("node_finder")).order(Order::Foreground);
             if let Some(pos) = node_finder.position {
                 node_finder_area = node_finder_area.current_pos(pos);
             }
@@ -491,7 +491,7 @@ where
             self.connection_in_progress = None;
         }
 
-        if mouse.secondary_released() && cursor_in_editor && !cursor_in_finder {
+        if mouse.secondary_released() && !cursor_in_finder {
             self.node_finder = Some(NodeFinder::new_at(cursor_pos));
         }
         if ui.ctx().input(|i| i.key_pressed(Key::Escape)) {
@@ -504,7 +504,7 @@ where
 
         // Deselect and deactivate finder if the editor backround is clicked,
         // *or* if the the mouse clicks off the ui
-        if click_on_background || (mouse.any_click() && !cursor_in_editor) {
+        if mouse.any_pressed() && !cursor_in_finder {
             self.selected_nodes = Vec::new();
             self.node_finder = None;
         }
@@ -512,7 +512,7 @@ where
         if drag_started_on_background && mouse.primary_down() {
             self.ongoing_box_selection = Some(cursor_pos);
         }
-        if mouse.primary_released() || drag_released_on_background {
+        if mouse.primary_released() || drag_stopped_on_background {
             self.ongoing_box_selection = None;
         }
 
@@ -580,6 +580,7 @@ where
             Rect::from_min_size(*self.position + self.pan, Self::MAX_NODE_SIZE.into()),
             Layout::default(),
             self.node_id,
+            None
         );
 
         Self::show_graph_node(self, pan_zoom, &mut child_ui, user_state)
@@ -625,7 +626,7 @@ where
         inner_rect.max.x = inner_rect.max.x.max(inner_rect.min.x);
         inner_rect.max.y = inner_rect.max.y.max(inner_rect.min.y);
 
-        let mut child_ui = ui.child_ui(inner_rect, *ui.layout());
+        let mut child_ui = ui.child_ui(inner_rect, *ui.layout(), None);
 
         // Get interaction rect from memory, it may expand after the window response on resize.
         let interaction_rect = ui
@@ -922,6 +923,7 @@ where
                     .titlebar_color(ui, self.node_id, self.graph, user_state)
                     .unwrap_or_else(|| background_color.lighten(0.8)),
                 stroke: Stroke::NONE,
+                blur_width: 0.0,
                 fill_texture_id: Default::default(),
                 uv: Rect::ZERO,
             });
@@ -935,6 +937,7 @@ where
                 rounding: Rounding::ZERO,
                 fill: background_color,
                 stroke: Stroke::NONE,
+                blur_width: 0.0,
                 fill_texture_id: Default::default(),
                 uv: Rect::ZERO,
             });
@@ -948,6 +951,7 @@ where
                 rounding,
                 fill: background_color,
                 stroke: Stroke::NONE,
+                blur_width: 0.0,
                 fill_texture_id: Default::default(),
                 uv: Rect::ZERO,
             });
@@ -959,6 +963,7 @@ where
                     rounding,
                     fill: Color32::WHITE.lighten(0.8),
                     stroke: Stroke::NONE,
+                    blur_width: 0.0,
                     fill_texture_id: Default::default(),
                     uv: Rect::ZERO,
                 })

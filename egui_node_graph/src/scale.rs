@@ -1,6 +1,7 @@
 use egui::epaint::Shadow;
 use egui::{
-    style::{Margin, WidgetVisuals},
+    Margin,
+    style::WidgetVisuals,
     Rounding, Stroke, Style, Vec2,
 };
 
@@ -52,7 +53,8 @@ impl Scale for Stroke {
 
 impl Scale for Shadow {
     fn scale(&mut self, amount: f32) {
-        self.extrusion *= amount.clamp(0.4, 1.);
+        self.offset *= amount.clamp(0.4, 1.);
+        self.blur = 0.0;
     }
 }
 
@@ -103,7 +105,7 @@ impl Scale for Style {
         self.visuals.selection.stroke.scale(amount);
 
         self.visuals.resize_corner_size *= amount;
-        self.visuals.text_cursor.width *= amount;
+        //self.visuals.text_cursor.width *= amount;
         self.visuals.clip_rect_margin *= amount;
         self.visuals.window_rounding.scale(amount);
         self.visuals.window_shadow.scale(amount);
