@@ -199,9 +199,6 @@ where
         // executed at the end of this function.
         let mut delayed_responses: Vec<NodeResponse<UserResponse, NodeData>> = prepend_responses;
 
-        // Used to detect when the background was clicked
-        let mut click_on_background = false;
-
         // Used to detect drag events in the background
         let mut drag_started_on_background = false;
         let mut drag_stopped_on_background = false;
@@ -216,9 +213,7 @@ where
         // Allocate rect before the nodes, otherwise this will block the interaction
         // with the nodes.
         let r = ui.allocate_rect(ui.min_rect(), Sense::click().union(Sense::drag()));
-        if r.clicked() {
-            click_on_background = true;
-        } else if r.drag_started() {
+        if r.drag_started() {
             drag_started_on_background = true;
         } else if r.drag_stopped() {
             drag_stopped_on_background = true;
