@@ -111,7 +111,7 @@ where
         &mut self,
         ui: &mut Ui,
         all_kinds: impl NodeTemplateIter<Item = NodeTemplate>,
-        user_state: &mut UserState,
+        user_state: &UserState,
         prepend_responses: Vec<NodeResponse<UserResponse, NodeData>>,
     ) -> GraphResponse<UserResponse, NodeData> {
         ui.set_clip_rect(ui.max_rect());
