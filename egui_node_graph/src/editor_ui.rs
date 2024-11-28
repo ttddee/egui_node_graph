@@ -176,7 +176,7 @@ where
         &mut self,
         ui: &mut Ui,
         all_kinds: impl NodeTemplateIter<Item = NodeTemplate>,
-        user_state: &mut UserState,
+        user_state: &UserState,
         prepend_responses: Vec<NodeResponse<UserResponse, NodeData>>,
     ) -> GraphResponse<UserResponse, NodeData> {
         // This causes the graph editor to use as much free space as it can.
@@ -569,13 +569,13 @@ where
         self,
         pan_zoom: &PanZoom,
         ui: &mut Ui,
-        user_state: &mut UserState,
+        user_state: &UserState,
     ) -> Vec<NodeResponse<UserResponse, NodeData>> {
         let mut child_ui = ui.child_ui_with_id_source(
             Rect::from_min_size(*self.position + self.pan, Self::MAX_NODE_SIZE.into()),
             Layout::default(),
             self.node_id,
-            None
+            None,
         );
 
         Self::show_graph_node(self, pan_zoom, &mut child_ui, user_state)
@@ -587,7 +587,7 @@ where
         self,
         pan_zoom: &PanZoom,
         ui: &mut Ui,
-        user_state: &mut UserState,
+        user_state: &UserState,
     ) -> Vec<NodeResponse<UserResponse, NodeData>> {
         let margin = egui::vec2(15.0, 5.0) * pan_zoom.zoom;
         let mut responses = Vec::<NodeResponse<UserResponse, NodeData>>::new();
@@ -767,7 +767,7 @@ where
             ui: &mut Ui,
             graph: &Graph<NodeData, DataType, ValueType>,
             node_id: NodeId,
-            user_state: &mut UserState,
+            user_state: &UserState,
             port_pos: Pos2,
             responses: &mut Vec<NodeResponse<UserResponse, NodeData>>,
             param_id: AnyParameterId,

@@ -24,7 +24,7 @@ pub trait WidgetValueTrait: Default {
         param_name: &str,
         node_id: NodeId,
         ui: &mut egui::Ui,
-        user_state: &mut Self::UserState,
+        user_state: &Self::UserState,
         node_data: &Self::NodeData,
     ) -> Vec<Self::Response>;
 
@@ -40,7 +40,7 @@ pub trait WidgetValueTrait: Default {
         param_name: &str,
         _node_id: NodeId,
         ui: &mut egui::Ui,
-        _user_state: &mut Self::UserState,
+        _user_state: &Self::UserState,
         _node_data: &Self::NodeData,
     ) -> Vec<Self::Response> {
         ui.label(param_name);
@@ -54,7 +54,7 @@ pub trait WidgetValueTrait: Default {
 /// to the user.
 pub trait DataTypeTrait<UserState>: PartialEq + Eq {
     /// The associated port color of this datatype
-    fn data_type_color(&self, user_state: &mut UserState) -> egui::Color32;
+    fn data_type_color(&self, user_state: &UserState) -> egui::Color32;
 
     /// The name of this datatype. Return type is specified as Cow<str> because
     /// some implementations will need to allocate a new string to provide an
@@ -119,7 +119,7 @@ where
         _ui: &mut egui::Ui,
         _node_id: NodeId,
         _graph: &Graph<Self, Self::DataType, Self::ValueType>,
-        _user_state: &mut Self::UserState,
+        _user_state: &Self::UserState,
     ) -> Vec<NodeResponse<Self::Response, Self>>
     where
         Self::Response: UserResponseTrait,
@@ -135,7 +135,7 @@ where
         ui: &mut egui::Ui,
         _node_id: NodeId,
         _graph: &Graph<Self, Self::DataType, Self::ValueType>,
-        _user_state: &mut Self::UserState,
+        _user_state: &Self::UserState,
         param_name: &str,
     ) -> Vec<NodeResponse<Self::Response, Self>>
     where
@@ -155,7 +155,7 @@ where
         _ui: &egui::Ui,
         _node_id: NodeId,
         _graph: &Graph<Self, Self::DataType, Self::ValueType>,
-        _user_state: &mut Self::UserState,
+        _user_state: &Self::UserState,
     ) -> Option<egui::Color32> {
         None
     }
@@ -174,7 +174,7 @@ where
         _node_id: NodeId,
         _param_id: AnyParameterId,
         _graph: &Graph<Self, Self::DataType, Self::ValueType>,
-        _user_state: &mut Self::UserState,
+        _user_state: &Self::UserState,
     ) {
     }
 
@@ -182,7 +182,7 @@ where
         &self,
         _node_id: NodeId,
         _graph: &Graph<Self, Self::DataType, Self::ValueType>,
-        _user_state: &mut Self::UserState,
+        _user_state: &Self::UserState,
     ) -> bool {
         true
     }
@@ -253,22 +253,22 @@ pub trait NodeTemplateTrait: Clone {
     /// The return type is Cow<str> to allow returning owned or borrowed values
     /// more flexibly. Refer to the documentation for `DataTypeTrait::name` for
     /// more information
-    fn node_finder_label(&self, user_state: &mut Self::UserState) -> std::borrow::Cow<str>;
+    fn node_finder_label(&self, user_state: &Self::UserState) -> std::borrow::Cow<str>;
 
     /// Vec of categories to which the node belongs.
     ///
     /// It's often useful to organize similar nodes into categories, which will
     /// then be used by the node finder to show a more manageable UI, especially
     /// if the node template are numerous.
-    fn node_finder_categories(&self, _user_state: &mut Self::UserState) -> Vec<Self::CategoryType> {
+    fn node_finder_categories(&self, _user_state: &Self::UserState) -> Vec<Self::CategoryType> {
         Vec::default()
     }
 
     /// Returns a descriptive name for the node kind, used in the graph.
-    fn node_graph_label(&self, user_state: &mut Self::UserState) -> String;
+    fn node_graph_label(&self, user_state: &Self::UserState) -> String;
 
     /// Returns the user data for this node kind.
-    fn node_data(&self, user_state: &mut Self::UserState) -> Self::NodeData;
+    fn node_data(&self, user_state: &Self::UserState) -> Self::NodeData;
 
     /// This function is run when this node kind gets added to the graph. The
     /// node will be empty by default, and this function can be used to fill its
@@ -276,7 +276,7 @@ pub trait NodeTemplateTrait: Clone {
     fn build_node(
         &self,
         graph: &mut Graph<Self::NodeData, Self::DataType, Self::ValueType>,
-        user_state: &mut Self::UserState,
+        user_state: &Self::UserState,
         node_id: NodeId,
     );
 }

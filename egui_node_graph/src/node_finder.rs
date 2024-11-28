@@ -36,7 +36,7 @@ where
         &mut self,
         ui: &mut Ui,
         all_kinds: impl NodeTemplateIter<Item = NodeTemplate>,
-        user_state: &mut UserState,
+        user_state: &UserState,
     ) -> Option<NodeTemplate> {
         let background_color;
         let text_color;

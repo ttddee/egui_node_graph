@@ -103,7 +103,7 @@ pub struct MyGraphState {
 
 // A trait for the data types, to tell the library how to display them
 impl DataTypeTrait<MyGraphState> for MyDataType {
-    fn data_type_color(&self, _user_state: &mut MyGraphState) -> egui::ecolor::Color32 {
+    fn data_type_color(&self, _user_state: &MyGraphState) -> egui::ecolor::Color32 {
         match self {
             MyDataType::Scalar => egui::Color32::from_rgb(38, 109, 211),
             MyDataType::Vec2 => egui::Color32::from_rgb(238, 207, 109),
@@ -127,7 +127,7 @@ impl NodeTemplateTrait for MyNodeTemplate {
     type UserState = MyGraphState;
     type CategoryType = &'static str;
 
-    fn node_finder_label(&self, _user_state: &mut Self::UserState) -> Cow<'_, str> {
+    fn node_finder_label(&self, _user_state: &Self::UserState) -> Cow<'_, str> {
         Cow::Borrowed(match self {
             MyNodeTemplate::MakeScalar => "New scalar",
             MyNodeTemplate::AddScalar => "Scalar add",
@@ -140,7 +140,7 @@ impl NodeTemplateTrait for MyNodeTemplate {
     }
 
     // this is what allows the library to show collapsible lists in the node finder.
-    fn node_finder_categories(&self, _user_state: &mut Self::UserState) -> Vec<&'static str> {
+    fn node_finder_categories(&self, _user_state: &Self::UserState) -> Vec<&'static str> {
         match self {
             MyNodeTemplate::MakeScalar
             | MyNodeTemplate::AddScalar
@@ -152,20 +152,20 @@ impl NodeTemplateTrait for MyNodeTemplate {
         }
     }
 
-    fn node_graph_label(&self, user_state: &mut Self::UserState) -> String {
+    fn node_graph_label(&self, user_state: &Self::UserState) -> String {
         // It's okay to delegate this to node_finder_label if you don't want to
         // show different names in the node finder and the node itself.
         self.node_finder_label(user_state).into()
     }
 
-    fn node_data(&self, _user_state: &mut Self::UserState) -> Self::NodeData {
+    fn node_data(&self, _user_state: &Self::UserState) -> Self::NodeData {
         MyNodeData { template: *self }
     }
 
     fn build_node(
         &self,
         graph: &mut Graph<Self::NodeData, Self::DataType, Self::ValueType>,
-        _user_state: &mut Self::UserState,
+        _user_state: &Self::UserState,
         node_id: NodeId,
     ) {
         // The nodes are created empty by default. This function needs to take
@@ -287,7 +287,7 @@ impl WidgetValueTrait for MyValueType {
         param_name: &str,
         _node_id: NodeId,
         ui: &mut egui::Ui,
-        _user_state: &mut MyGraphState,
+        _user_state: &MyGraphState,
         _node_data: &MyNodeData,
     ) -> Vec<MyResponse> {
         // This trait is used to tell the library which UI to display for the
